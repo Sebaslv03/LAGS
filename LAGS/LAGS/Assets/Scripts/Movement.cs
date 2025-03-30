@@ -6,6 +6,7 @@ public class Movement : MonoBehaviour
 {
     public float moveSpeed;
     public Rigidbody2D rb;
+    public SpriteRenderer spriteRenderer;
     public Animator animator;
     private Vector2 moveDirection;
     private Vector2 forceToApply;
@@ -29,9 +30,12 @@ public class Movement : MonoBehaviour
         float moveY = Input.GetAxisRaw("Vertical");
 
         moveDirection = new Vector2(moveX, moveY).normalized;
-        
-        
+
+
         animator.SetFloat("Speed", moveDirection.magnitude);
+        animator.SetFloat("Horizontal", moveDirection.x);
+        animator.SetFloat("Vertical", moveDirection.y);
+
 
     }
 
@@ -49,12 +53,12 @@ public class Movement : MonoBehaviour
             forceToApply = Vector2.zero;
         }
         rb.velocity = moveForce;
-
+        spriteRenderer.flipX = rb.velocity.x < 0;
         if (moveDirection != Vector2.zero)
         {
-            float angle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg - 90f;
+            // float angle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg - 90f;
 
-            rb.rotation = Mathf.LerpAngle(rb.rotation, angle, rotationSpeed * Time.fixedDeltaTime);
+            // rb.rotation = Mathf.LerpAngle(rb.rotation, angle, rotationSpeed * Time.fixedDeltaTime);
         }
     }
 }
