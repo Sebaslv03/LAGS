@@ -1,10 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class EnemyPatrolling : Enemy
 {
-    public Transform target;
     public float chaseRadius;
     public float attackRadius;
     public Transform homePosition;
@@ -14,9 +14,11 @@ public class EnemyPatrolling : Enemy
     public int currentPoint;
     public Transform currentGoal;
     public SpriteRenderer spriteRenderer;
+    
 
     void Start()
     {
+        state = Behaviour.Patrolling;
         target = GameObject.FindWithTag("Player").transform;
         currentGoal = path[currentPoint];
         rb = GetComponent<Rigidbody2D>();
@@ -25,13 +27,22 @@ public class EnemyPatrolling : Enemy
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (CheckDistance())
+        if (state == Behaviour.Patrolling && CheckDistance())
+        {
+            state = Behaviour.Chasing;
+        }
+
+        if (state == Behaviour.Chasing)
         {
             ChasePlayer();
         }
-        else
+        else if (state == Behaviour.Patrolling)
         {
             Patrol();
+        }
+        else if (state == Behaviour.RunningFromLight)
+        {
+            RunFromLight();
         }
     }
     void Update()
@@ -60,6 +71,9 @@ public class EnemyPatrolling : Enemy
             currentGoal = path[currentPoint];
         }
     }
+
+    
+
     void ChasePlayer()
     {
         // Calculate direction
