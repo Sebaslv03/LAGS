@@ -8,8 +8,8 @@ public class Movement : MonoBehaviour
     public Rigidbody2D rb;
     public SpriteRenderer spriteRenderer;
     public Animator animator;
-    private Vector2 moveDirection;
-    private Vector2 forceToApply;
+    private Vector2 moveDirection = Vector2.zero;
+    private Vector2 forceToApply = Vector2.zero;
     public float forceDamping;
     public float rotationSpeed;
 
@@ -41,10 +41,6 @@ public class Movement : MonoBehaviour
 
     void Move()
     {
-        if (moveDirection == null || forceToApply == null)
-        {
-            return;
-        }
         Vector2 moveForce = moveDirection * moveSpeed;
         moveForce += forceToApply;
         forceToApply /= forceDamping;
@@ -54,11 +50,5 @@ public class Movement : MonoBehaviour
         }
         rb.velocity = moveForce;
         spriteRenderer.flipX = rb.velocity.x < 0;
-        if (moveDirection != Vector2.zero)
-        {
-            // float angle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg - 90f;
-
-            // rb.rotation = Mathf.LerpAngle(rb.rotation, angle, rotationSpeed * Time.fixedDeltaTime);
-        }
     }
 }

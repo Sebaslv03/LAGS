@@ -5,7 +5,7 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     public float sanity = 100f;
-    public int heartbeat = 90;
+    public float heartbeat = 90;
     private float sanityDecrement = 0.5f;
     AudioManager audioManager;
 
@@ -31,6 +31,7 @@ public class Player : MonoBehaviour
         // Cuando la sanidad es 0, el latido está acelerado (2)
         float heartbeatSpeed = 1f - sanityPercentage; // Invertir el porcentaje para hacer que el latido aumente cuando la sanidad baja
 
+        heartbeat = Mathf.Lerp(90f, 200f,heartbeatSpeed);
         // Cambiar el ritmo del corazón
         audioManager.ChangeHeartBeat(heartbeatSpeed);
     }
