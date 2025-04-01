@@ -8,29 +8,40 @@ public class EnemyPatrolling : Enemy
     public float chaseRadius;
     public float attackRadius;
     public Transform homePosition;
-    
+
     private Vector2 direction;
     public Transform[] path;
     public int currentPoint;
     public Transform currentGoal;
     bool isAttacking;
     public SpriteRenderer spriteRenderer;
-    
+
 
     void Start()
     {
         state = Behaviour.Patrolling;
         target = GameObject.FindWithTag("Player").transform;
-        currentGoal = path[currentPoint];
+        if (path != null && path.Length != 0)
+        {
+            currentGoal = path[currentPoint];
+        }
         rb = GetComponent<Rigidbody2D>();
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (state == Behaviour.Patrolling && CheckDistance(chaseRadius))
+        if (CheckPlayerHealing())
+        {
+            state = Behaviour.Patrolling;
+        }
+        else if (state == Behaviour.Patrolling && CheckDistance(chaseRadius))
         {
             state = Behaviour.Chasing;
+        }
+        else if (state == Behaviour.Chasing && !CheckDistance(chaseRadius))
+        {
+            state = Behaviour.Patrolling;
         }
         if (CheckDistance(attackRadius))
         {
@@ -55,9 +66,14 @@ public class EnemyPatrolling : Enemy
     void Update()
     {
         myAnimator.SetFloat("Speed", direction.magnitude);
-        myAnimator.SetFloat("Horizontal",direction.x);
+        myAnimator.SetFloat("Horizontal", direction.x);
         myAnimator.SetFloat("Vertical", direction.y);
         spriteRenderer.flipX = direction.x < 0;
+    }
+
+    bool CheckPlayerHealing()
+    {
+        return target.GetComponent<Player>().IsHealing();
     }
 
     void Patrol()
@@ -86,7 +102,7 @@ public class EnemyPatrolling : Enemy
 
         // Move towards the target
         rb.MovePosition(rb.position + direction * moveSpeed * Time.fixedDeltaTime);
-        
+
     }
 
     IEnumerator DamagePlayer()

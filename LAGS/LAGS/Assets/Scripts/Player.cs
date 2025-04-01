@@ -7,6 +7,7 @@ public class Player : MonoBehaviour
     public float sanity = 100f;
     public float heartbeat = 90;
     private float sanityDecrement = 0.5f;
+    private bool isHealing = false;
     AudioManager audioManager;
 
     void Start()
@@ -17,7 +18,7 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (sanity >= 0)
+        if (sanity >= 0 && !isHealing)
         {
             // Reducir la sanidad del jugador
             sanity -= sanityDecrement * Time.deltaTime;
@@ -31,11 +32,33 @@ public class Player : MonoBehaviour
         // Cuando la sanidad es 0, el latido está acelerado (2)
         float heartbeatSpeed = 1f - sanityPercentage; // Invertir el porcentaje para hacer que el latido aumente cuando la sanidad baja
 
-        heartbeat = Mathf.Lerp(90f, 200f,heartbeatSpeed);
+        heartbeat = Mathf.Lerp(90f, 200f, heartbeatSpeed);
         // Cambiar el ritmo del corazón
         audioManager.ChangeHeartBeat(heartbeatSpeed);
     }
 
-    
+    public void Heal(float healAmount)
+    {
+        isHealing = true;
+        // Aumentar la sanidad del jugador
+        sanity += healAmount;
+        // Limitar la sanidad a un máximo de 100
+        if (sanity > 100f)
+        {
+            sanity = 100f;
+        }
+
+    }
+    public void StopHealing()
+    {
+        isHealing = false;
+    }
+
+    public bool IsHealing()
+    {
+        return isHealing;
+    }
+
+
 
 }
