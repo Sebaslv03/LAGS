@@ -12,6 +12,7 @@ public class Movement : MonoBehaviour
     private Vector2 forceToApply = Vector2.zero;
     public float forceDamping;
     public float rotationSpeed;
+    public AudioSource audioSource;
 
     // Update is called once per frame
     void Update()
@@ -31,7 +32,14 @@ public class Movement : MonoBehaviour
 
         moveDirection = new Vector2(moveX, moveY).normalized;
 
-
+        if(moveDirection.magnitude > 0.01)
+        {
+            audioSource.enabled = true;
+        }
+        else
+        {
+            audioSource.enabled = false;
+        }
         animator.SetFloat("Speed", moveDirection.magnitude);
         animator.SetFloat("Horizontal", moveDirection.x);
         animator.SetFloat("Vertical", moveDirection.y);
