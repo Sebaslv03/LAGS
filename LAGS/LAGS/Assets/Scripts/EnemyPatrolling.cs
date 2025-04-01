@@ -13,6 +13,7 @@ public class EnemyPatrolling : Enemy
     public Transform[] path;
     public int currentPoint;
     public Transform currentGoal;
+    bool isAttacking;
     public SpriteRenderer spriteRenderer;
     
 
@@ -27,11 +28,17 @@ public class EnemyPatrolling : Enemy
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (state == Behaviour.Patrolling && CheckDistance())
+        if (state == Behaviour.Patrolling && CheckDistance(chaseRadius))
         {
             state = Behaviour.Chasing;
         }
-
+        if (CheckDistance(attackRadius))
+        {
+            if (!isAttacking)
+            {
+                StartCoroutine(DamagePlayer());
+            }
+        }
         if (state == Behaviour.Chasing)
         {
             ChasePlayer();
@@ -72,8 +79,6 @@ public class EnemyPatrolling : Enemy
         }
     }
 
-    
-
     void ChasePlayer()
     {
         // Calculate direction
@@ -83,8 +88,24 @@ public class EnemyPatrolling : Enemy
         rb.MovePosition(rb.position + direction * moveSpeed * Time.fixedDeltaTime);
         
     }
-    bool CheckDistance()
+
+    IEnumerator DamagePlayer()
     {
-        return Vector3.Distance(this.transform.position, target.position) <= chaseRadius;
+        isAttacking = true;
+        while (CheckDistance(attackRadius)) // Mientras el jugador esté cerca
+        {
+            Player playerScript = target.GetComponent<Player>();
+            if (playerScript != null && playerScript.sanity >= 5)
+            {
+                playerScript.sanity -= hit; // Reducir sanidad
+            }
+            yield return new WaitForSeconds(2); // Esperar antes de volver a hacer daño
+        }
+        isAttacking = false;
+    }
+
+    bool CheckDistance(float radius)
+    {
+        return Vector3.Distance(transform.position, target.position) <= radius;
     }
 }
