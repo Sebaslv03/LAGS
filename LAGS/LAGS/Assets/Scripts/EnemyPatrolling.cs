@@ -110,6 +110,7 @@ public class EnemyPatrolling : Enemy
         isAttacking = true;
         while (CheckDistance(attackRadius)) // Mientras el jugador esté cerca
         {
+            Debug.Log(enemyName + " Attacking player");
             Player playerScript = target.GetComponent<Player>();
             if (playerScript != null && playerScript.sanity >= 5)
             {
