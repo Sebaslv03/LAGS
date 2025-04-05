@@ -18,6 +18,11 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            CheckInteraction();
+        }
+
         if (sanity >= 0 && !isHealing)
         {
             // Reducir la sanidad del jugador
@@ -49,6 +54,22 @@ public class Player : MonoBehaviour
         }
 
     }
+
+    private void CheckInteraction()
+    {
+        RaycastHit2D[] hits = Physics2D.BoxCastAll(transform.position, new Vector2(0.1f, 1f), 0, Vector2.zero);
+        if (hits.Length > 0)
+        {
+            foreach (RaycastHit2D rc in hits)
+            {
+                if (rc.transform.GetComponent<Interactable>())
+                {
+                    rc.transform.GetComponent<Interactable>().Interact();
+                }
+            }
+        }
+    }
+
     public void StopHealing()
     {
         isHealing = false;
