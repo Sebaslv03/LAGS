@@ -45,14 +45,16 @@ public class EnemyPatrolling : Enemy
         }
         if (CheckDistance(attackRadius))
         {
+            
             if (!isAttacking)
             {
                 StartCoroutine(DamagePlayer());
             }
         }
-        if (state == Behaviour.Chasing)
+        if (state == Behaviour.Chasing && !isAttacking)
         {
-            ChasePlayer();
+            if(target.gameObject.GetComponent<Player>().sanity > 0)
+                ChasePlayer();
         }
         else if (state == Behaviour.Patrolling)
         {
@@ -112,9 +114,11 @@ public class EnemyPatrolling : Enemy
         {
             Debug.Log(enemyName + " Attacking player");
             Player playerScript = target.GetComponent<Player>();
-            if (playerScript != null && playerScript.sanity >= 5)
+            if (playerScript != null && playerScript.sanity >= hit)
             {
                 playerScript.sanity -= hit; // Reducir sanidad
+            }else{
+                playerScript.sanity = 0;
             }
             yield return new WaitForSeconds(2); // Esperar antes de volver a hacer daño
         }

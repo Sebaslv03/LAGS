@@ -13,6 +13,7 @@ public class Movement : MonoBehaviour
     public float forceDamping;
     public float rotationSpeed;
     public AudioSource audioSource;
+    public bool canMove = true; 
 
     // Update is called once per frame
     void Update()
@@ -22,7 +23,10 @@ public class Movement : MonoBehaviour
 
     void FixedUpdate()
     {
-        Move();
+        if(canMove)
+            Move();
+        else
+            rb.velocity = Vector2.zero;
     }
 
     void ProcessInputs()
